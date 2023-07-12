@@ -11,7 +11,7 @@ import {
 import {StackActions, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const LoginPage = () => {
   const navigation = useNavigation();
@@ -31,6 +31,9 @@ const LoginPage = () => {
       alert(e);
     }
   };
+  const goToSignup = () => {
+    navigation.navigate('Signup');
+  };
 
   const handleLogin = () => {
     if (!/\S+@\S+\.\S+/.test(email)) {
@@ -41,7 +44,7 @@ const LoginPage = () => {
       return;
     }
     axios
-      .post('http://192.168.191.136:8000/api/login', {
+      .post('https://kind-gray-slug-slip.cyclic.app/api/login', {
         email: email,
         password: password,
       })
@@ -51,12 +54,8 @@ const LoginPage = () => {
         navigation.dispatch(StackActions.replace('Mainpage'));
       })
       .catch(function (error) {
-        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+        ToastAndroid.show('Email atau password invalid', ToastAndroid.SHORT);
       });
-  };
-
-  const goToSignup = () => {
-    navigation.navigate('Signup');
   };
 
   return (
@@ -95,12 +94,11 @@ const LoginPage = () => {
           <TouchableOpacity
             className="absolute right-2 top-3"
             onPress={togglePasswordVisibility}>
-            {/* <Feather
-              name={showPassword ? 'eye' : 'eye-off'}
-              size={20}
-              color={showPassword ? 'gray' : 'black'}
-            /> */}
-            <Icon size={24} color="black" name="remove-red-eye" />
+            <Icon
+              size={24}
+              color="black"
+              name={showPassword ? 'eye' : 'eye-slash'}
+            />
           </TouchableOpacity>
         </View>
       </View>

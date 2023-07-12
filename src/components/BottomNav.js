@@ -6,6 +6,7 @@ import ProfileScreen from './ProfileScreen';
 import RiwayatScreen from './RiwayatScreen';
 import {Text} from 'react-native';
 import ScanScreen from './ScanScreen';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,7 @@ const BottomNav = () => {
             iconName = 'eye';
           }
 
-          return <Text>a</Text>;
+          return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#295FA6',
         tabBarInactiveTintColor: 'gray',

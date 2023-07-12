@@ -1,23 +1,46 @@
-import React, {useEffect} from 'react';
-import {View, Text, Image, ScrollView} from 'react-native';
-import avatar from '../../public/profile.png'; // Gambar profil
-import heroImage from '../../public/hero.png'; // Gambar hero
-import newsData from './newsData.json'; // Data berita dari JSON statis
-// import { Ionicons } from '@expo/vector-icons';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Image, ScrollView, ActivityIndicator} from 'react-native';
+import avatar from '../../public/profile.png';
+import heroImage from '../../public/hero.png';
+import newsData from './newsData.json';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const HomeScreen = () => {
+  const [data, setData] = useState(null);
+
+  const getData = async () => {
+    try {
+      const val = await AsyncStorage.getItem('userData');
+      if (val !== null) {
+        setData(JSON.parse(val).data.name);
+      }
+    } catch (e) {
+      ToastAndroid.show('Internal Server Error', ToastAndroid.SHORT);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+  if (data == null) {
+    return <ActivityIndicator style={{flex: 1}} size={50} color="blue" />;
+  }
   return (
     <View style={{flex: 1}} className=" bg-white">
       {/* Gambar profil dan nama pengguna */}
       <View className="flex-row items-center  p-5">
         <Image source={avatar} className="w-8 h-8 mr-4" />
-        <Text className="text-lg font-['Poppins-SemiBold']">rasyidk</Text>
+        <Text className="text-lg font-['Poppins-SemiBold'] capitalize">
+          {data}
+        </Text>
       </View>
 
       {/* Gambar hero */}
       <Image source={heroImage} className="w-[100vw] h-48 mb-4" />
 
       {/* Daftar berita */}
-      <Text className="text-lg  my-2 px-5 text-xl font-['Poppins-SemiBold']">
+      <Text className="text-lg my-2 px-5 text-xl font-['Poppins-SemiBold'] text-black">
         Berita
       </Text>
       <ScrollView className="px-5 mt-2">
@@ -38,18 +61,20 @@ const HomeScreen = () => {
             <View className="flex-row items-center mb-2 gap-2">
               <Image
                 source={require(`../../public/images/new4.png`)}
-                className="w-20 h-20 mr-2 rounded-lg h-full"
+                className="w-24 h-20 mr-2 rounded-lg h-full"
               />
-              <View>
-                <Text className="text-lg font-['Poppins-SemiBold'] flex-wrap mb-2 break-words">
-                  {item.title.substring(0, 25)}...
+              <View className="flex" style={{flex: 1}}>
+                <Text
+                  className="text-sm font-['Poppins-SemiBold'] mb-2 text-justify text-black"
+                  numberOfLines={2}>
+                  {item.title.substring(0, 70)}...
                 </Text>
                 <View className="flex flex-row">
                   <Text className="text-xs font-['Poppins-Regular']">BY </Text>
                   <Text className="text-xs text-blue-600 mr-2 font-['Poppins-Regular']">
                     {item.source}
                   </Text>
-                  {/* <Ionicons name="time" className="text-green-500" size={12} /> */}
+                  <Icon size={14} color="blue" name="clock-o" />
                   <Text className="text-xs ml-1 font-['Poppins-Regular']">
                     {item.datetime}
                   </Text>

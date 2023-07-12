@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SignupPage = () => {
   const navigation = useNavigation();
@@ -42,7 +43,7 @@ const SignupPage = () => {
     }
 
     axios
-      .post('http://192.168.191.136:8000/api/userreg', {
+      .post('https://kind-gray-slug-slip.cyclic.app/api/userreg', {
         nik: nik,
         name: nama,
         email: email,
@@ -50,12 +51,11 @@ const SignupPage = () => {
         password: password,
       })
       .then(function (response) {
-        ``;
         ToastAndroid.show('Registrasi berhasil', ToastAndroid.SHORT);
         navigation.dispatch(StackActions.replace('Login'));
       })
       .catch(function (error) {
-        console.log(error);
+        ToastAndroid.show('Invalid Data', ToastAndroid.SHORT);
       });
   };
 
@@ -137,11 +137,11 @@ const SignupPage = () => {
         <TouchableOpacity
           className="absolute right-2 top-3"
           onPress={togglePasswordVisibility}>
-          {/* <Feather
-            name={showPassword ? 'eye' : 'eye-off'}
-            size={20}
-            color={showPassword ? 'gray' : 'black'}
-          /> */}
+          <Icon
+            size={24}
+            color="black"
+            name={showPassword ? 'eye' : 'eye-slash'}
+          />
         </TouchableOpacity>
       </View>
 
@@ -159,17 +159,17 @@ const SignupPage = () => {
         <TouchableOpacity
           className="absolute right-2 top-3"
           onPress={toggleConfirmPasswordVisibility}>
-          {/* <Feather
-            name={showConfirmPassword ? 'eye' : 'eye-off'}
-            size={20}
-            color={showConfirmPassword ? 'gray' : 'black'}
-          /> */}
+          <Icon
+            size={24}
+            color="black"
+            name={showPassword ? 'eye' : 'eye-slash'}
+          />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
         className="bg-[#295FA6] rounded-lg py-3"
-        onPress={handleSignup}>
+        onPress={() => handleSignup()}>
         <Text className="text-white text-center font-['Poppins-SemiBold']">
           Simpan Data
         </Text>
