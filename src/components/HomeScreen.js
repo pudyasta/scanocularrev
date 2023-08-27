@@ -1,12 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, ScrollView, ActivityIndicator} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import avatar from '../../public/profile.png';
 import heroImage from '../../public/hero.png';
 import newsData from './newsData.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StackActions, useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const [data, setData] = useState(null);
 
   const getData = async () => {
@@ -23,18 +32,27 @@ const HomeScreen = () => {
   useEffect(() => {
     getData();
   }, []);
+
   if (data == null) {
     return <ActivityIndicator style={{flex: 1}} size={50} color="blue" />;
   }
+
+  const toProfile = () => {
+    navigation.dispatch(StackActions.replace('Profilepage'));
+  };
+
   return (
     <View style={{flex: 1}} className=" bg-white">
       {/* Gambar profil dan nama pengguna */}
-      <View className="flex-row items-center  p-5">
-        <Image source={avatar} className="w-8 h-8 mr-4" />
-        <Text className="text-lg font-['Poppins-SemiBold'] capitalize">
-          {data}
-        </Text>
-      </View>
+
+      <TouchableOpacity onPress={toProfile}>
+        <View className="flex-row items-center  p-5">
+          <Image source={avatar} className="w-8 h-8 mr-4" />
+          <Text className="text-lg font-['Poppins-SemiBold'] capitalize">
+            {data}
+          </Text>
+        </View>
+      </TouchableOpacity>
 
       {/* Gambar hero */}
       <Image source={heroImage} className="w-[100vw] h-48 mb-4" />
