@@ -6,6 +6,7 @@ import SignupPage from './src/modules/Signup';
 import SplashScreen from './src/modules/SplashScreen';
 import MainPage from './src/modules/MainPage';
 import ResultPage from './src/modules/ResultPage';
+import ProfilePage from './src/modules/ProfilePage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator, StatusBar, ToastAndroid} from 'react-native';
 
@@ -43,6 +44,7 @@ function App() {
         backgroundColor="white"
         barStyle={'dark-content'}
       />
+      {/* <Stack.Navigator initialRouteName={isLogin ? 'Mainpage' : 'Login'}> */}
       <Stack.Navigator initialRouteName={isLogin ? 'Mainpage' : 'Login'}>
         <Stack.Screen
           name="Login"
@@ -68,6 +70,12 @@ function App() {
           name="Resultpage"
           options={{headerShown: false}}
           component={ResultPage}
+        />
+
+        <Stack.Screen
+          name="Profilepage"
+          options={{headerShown: false}}
+          component={ProfilePage}
         />
       </Stack.Navigator>
     </NavigationContainer>
