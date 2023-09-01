@@ -7,8 +7,11 @@ import SplashScreen from './src/modules/SplashScreen';
 import MainPage from './src/modules/MainPage';
 import ResultPage from './src/modules/ResultPage';
 import ProfilePage from './src/modules/ProfilePage';
+import GlukomaTest from './src/modules/GlukomaTest';
+import ArticleView from './src/modules/ArticleView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator, StatusBar, ToastAndroid} from 'react-native';
+import ScanScreen from './src/modules/ScanScreen';
 
 const Stack = createStackNavigator();
 
@@ -70,6 +73,22 @@ function App() {
           name="Resultpage"
           options={{headerShown: false}}
           component={ResultPage}
+        />
+
+        <Stack.Screen
+          name="ArticleView"
+          options={{headerShown: false}}
+          component={ArticleView}
+        />
+        <Stack.Screen
+          name="ScanScreen"
+          options={{headerShown: false}}
+          component={ScanScreen}
+        />
+        <Stack.Screen
+          name="GlukomaScreen"
+          options={{headerShown: false}}
+          component={GlukomaTest}
         />
 
         <Stack.Screen

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView} from 'react-native';
+import {Button, ScrollView} from 'react-native';
 import {
   View,
   Text,
@@ -10,9 +10,25 @@ import {
 import {StackActions, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import DatePicker from 'react-native-date-picker';
+
+const convertDateFormat = inputDate => {
+  const parts = inputDate.split('/');
+  if (parts.length === 3) {
+    const day = parts[0].padStart(2, '0');
+    const month = parts[1].padStart(2, '0');
+    const year = parts[2];
+
+    return `${year}-${month}-${day}`;
+  } else {
+    return 'Invalid date format';
+  }
+};
 
 const SignupPage = () => {
   const navigation = useNavigation();
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
 
   const [nik, setNik] = useState('');
   const [nama, setNama] = useState('');
@@ -43,12 +59,13 @@ const SignupPage = () => {
     }
 
     axios
-      .post('https://kind-gray-slug-slip.cyclic.app/api/userreg', {
-        nik: nik,
+      .post('https://scan-ocular-backend.vercel.app/api/users/signup/', {
+        NIK: nik,
         name: nama,
         email: email,
         alamat: alamat,
         password: password,
+        tanggal_lahir: convertDateFormat(date.toLocaleDateString()),
       })
       .then(function (response) {
         ToastAndroid.show('Registrasi berhasil', ToastAndroid.SHORT);
@@ -71,7 +88,7 @@ const SignupPage = () => {
   };
 
   return (
-    <ScrollView className="flex-1 p-5 py-8">
+    <ScrollView className="flex-1 px-5 py-6 bg-white">
       <Text className="text-2xl  mb-2 text-center font-['Poppins-SemiBold'] text-black">
         Daftarkan Akun Anda
       </Text>
@@ -109,6 +126,38 @@ const SignupPage = () => {
           className="input border p-2 mb-3 rounded-lg border border-gray-400 font-['Poppins-Regular']"
           value={email}
           onChangeText={setEmail}
+        />
+      </View>
+
+      <View className="mb-3">
+        <Text className="text-xs mb-1 text-gray-600 font-['Poppins-Regular']">
+          Tanggal Lahir
+        </Text>
+        <TextInput
+          cursorColor="#aeaeae"
+          className="border p-2 mb-3 rounded-lg border border-gray-400 font-['Poppins-Regular'] text-black"
+          value={date.toLocaleDateString()}
+          editable={false}
+        />
+        <TouchableOpacity
+          className="absolute right-2 top-7"
+          onPress={() => {
+            setOpen(true);
+          }}>
+          <Icon size={24} color="black" name="calendar" />
+        </TouchableOpacity>
+        <DatePicker
+          modal
+          open={open}
+          date={date}
+          onConfirm={date => {
+            setOpen(false);
+            setDate(date);
+          }}
+          onCancel={() => {
+            setOpen(false);
+          }}
+          mode="date"
         />
       </View>
       <View className="mb-3">

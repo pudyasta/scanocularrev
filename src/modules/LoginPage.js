@@ -44,7 +44,7 @@ const LoginPage = () => {
       return;
     }
     axios
-      .post('https://kind-gray-slug-slip.cyclic.app/api/login', {
+      .post('https://scan-ocular-backend.vercel.app/api/users/signin/', {
         email: email,
         password: password,
       })
@@ -59,7 +59,7 @@ const LoginPage = () => {
   };
 
   return (
-    <View className="flex-1 items-center justify-center px-5">
+    <View className="flex-1 items-center justify-center px-5 bg-white">
       <Image source={require('../../public/logo.png')} className="mb-4" />
       <Text className="text-2xl mb-2 font-[Poppins-SemiBold] text-black">
         Selamat Datang

@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import avatar from '../../public/profile.png';
 import heroImage from '../../public/hero.png';
-import newsData from './newsData.json';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions, useNavigation} from '@react-navigation/native';
@@ -43,12 +42,10 @@ const HomeScreen = () => {
 
   return (
     <View style={{flex: 1}} className=" bg-white">
-      {/* Gambar profil dan nama pengguna */}
-
       <TouchableOpacity onPress={toProfile}>
         <View className="flex-row items-center  p-5">
           <Image source={avatar} className="w-8 h-8 mr-4" />
-          <Text className="text-lg font-['Poppins-SemiBold'] capitalize">
+          <Text className="text-lg font-['Poppins-SemiBold'] capitalize text-black">
             {data}
           </Text>
         </View>
@@ -62,7 +59,7 @@ const HomeScreen = () => {
         Berita
       </Text>
       <ScrollView className="px-5 mt-2">
-        {newsData.map((item, index) => (
+        {SECTIONS.map((item, index) => (
           <View
             key={index}
             className="bg-white rounded-md drop-shadow-xl p-4 mb-4 "
@@ -78,7 +75,7 @@ const HomeScreen = () => {
             }}>
             <View className="flex-row items-center mb-2 gap-2">
               <Image
-                source={require(`../../public/images/new4.png`)}
+                source={item.uri}
                 className="w-24 h-20 mr-2 rounded-lg h-full"
               />
               <View className="flex" style={{flex: 1}}>
@@ -97,7 +94,9 @@ const HomeScreen = () => {
                     {item.datetime}
                   </Text>
                 </View>
-                <Text className="text-blue-600 font-['Poppins-SemiBold'] text-md mt-2">
+                <Text
+                  className="text-blue-600 font-['Poppins-SemiBold'] text-md mt-2"
+                  onPress={() => navigation.navigate('ArticleView', item)}>
                   Cek Selengkapnya
                 </Text>
               </View>
@@ -108,5 +107,34 @@ const HomeScreen = () => {
     </View>
   );
 };
+
+export const SECTIONS = [
+  {
+    title: 'Dokter RSA UGM Jelaskan Cara Cegah Penularan',
+    uri: require('../../public/images/new1.png'),
+    source: 'Tribun.com',
+    datetime: '8 Mei 2023',
+  },
+  {
+    title: 'JEC Eye Klaim Atasi 18 Ribu   Kelainan Refraksi Mata Indonesia',
+    uri: require('../../public/images/new2.png'),
+    source: 'Detik.com',
+    datetime: '8 Mei 2023',
+  },
+
+  {
+    title: '6 Cara Mengatasi Mata Lelah Melihat Layar Perangkat',
+    uri: require('../../public/images/new3.png'),
+    source: 'halodoc.com',
+    datetime: '8 Mei 2023',
+  },
+
+  {
+    title: 'Cara Mengatasi Mata Bengkak setelah Bangun Tidur',
+    source: 'halodoc.com',
+    datetime: '8 Mei 2023',
+    uri: require('../../public/images/new1.png'),
+  },
+];
 
 export default HomeScreen;

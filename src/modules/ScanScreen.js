@@ -4,9 +4,10 @@ import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import TermsOfServices from './TermsOfServices';
+import TermsOfServices from '../components/TermsOfServices';
+import RNFS from 'react-native-fs';
 
-const ScanScreen = () => {
+const ScanScreen = props => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(null);
@@ -16,10 +17,11 @@ const ScanScreen = () => {
   const [torch, setTorch] = useState('off');
   const devices = useCameraDevices();
   const device = camView === 'back' ? devices.back : devices.front;
+  const [dataPath, setDataPath] = useState('');
 
   const cameraPermission = async () => {
     const permission = await Camera.requestCameraPermission();
-    if (permission === 'denied') {
+    if (permission !== 'authorized') {
       await Linking.openSettings();
     }
     setLoading(devices);
@@ -30,20 +32,38 @@ const ScanScreen = () => {
   }, [cameraPermission, devices]);
   const takePhoto = async () => {
     setLoading(true);
-    navigation.navigate('Resultpage');
+
+    // navigation.navigate('Resultpage');
     try {
-      //Error Handle better
       if (cameraRef.current == null) {
         throw new Error('Camera Ref is Null');
+      } else {
+        const photo = await cameraRef.current.takeSnapshot({
+          quality: 85,
+          skipMetadata: true,
+        });
+
+        setDataPath(photo.path);
+        RNFS.readFile(photo.path, 'base64').then(async res => {
+          var path = RNFS.ExternalDirectoryPath + '/test.txt';
+
+          // write the file
+          RNFS.writeFile(path, res, 'utf8')
+            .then(success => {
+              console.log('FILE WRITTEN! ' + path);
+            })
+            .catch(err => {
+              console.log(err.message);
+            });
+        });
+        console.log(dataPath);
       }
-      const photo = await cameraRef.current.takePhoto({
-        qualityPrioritization: 'quality',
-        flash: `${torch}`,
-        enableAutoRedEyeReduction: true,
-      });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
-  if (device == null) {
+
+  if (!device || !cameraPermission) {
     return <ActivityIndicator style={{flex: 1}} size={50} color="blue" />;
   }
   return (
@@ -58,6 +78,7 @@ const ScanScreen = () => {
               photo={true}
               isActive={true}
               ref={cameraRef}
+              {...props}
             />
           </>
         )}

@@ -5,8 +5,9 @@ import HomeScreen from './HomeScreen';
 import ProfileScreen from './ProfileScreen';
 import RiwayatScreen from './RiwayatScreen';
 import {Text} from 'react-native';
-import ScanScreen from './ScanScreen';
+import ScanScreen from '../modules/ScanScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ScanMenu from './ScanMenu';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +23,7 @@ const BottomNav = () => {
           } else if (route.name === 'Riwayat') {
             iconName = 'calendar';
           } else if (route.name === 'Scan') {
-            iconName = 'eye';
+            iconName = 'plus-circle';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -46,7 +47,7 @@ const BottomNav = () => {
       <Tab.Screen
         name="Scan"
         options={{headerShown: false}}
-        component={ScanScreen}
+        component={ScanMenu}
       />
       <Tab.Screen
         name="Riwayat"
