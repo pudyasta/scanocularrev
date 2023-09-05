@@ -8,6 +8,7 @@ import MainPage from './src/modules/MainPage';
 import ResultPage from './src/modules/ResultPage';
 import ProfilePage from './src/modules/ProfilePage';
 import GlukomaTest from './src/modules/GlukomaTest';
+import DiabetesTest from './src/modules/DiabetesTest';
 import ArticleView from './src/modules/ArticleView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator, StatusBar, ToastAndroid} from 'react-native';
@@ -89,6 +90,11 @@ function App() {
           name="GlukomaScreen"
           options={{headerShown: false}}
           component={GlukomaTest}
+        />
+        <Stack.Screen
+          name="DiabetesScreen"
+          options={{headerShown: false}}
+          component={DiabetesTest}
         />
 
         <Stack.Screen

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, ScrollView} from 'react-native';
+import {ScrollView} from 'react-native';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import DatePicker from 'react-native-date-picker';
 
 const convertDateFormat = inputDate => {
-  const parts = inputDate.split('/');
+  const parts = inputDate.toLocaleDateString().split('/');
   if (parts.length === 3) {
     const day = parts[0].padStart(2, '0');
     const month = parts[1].padStart(2, '0');
@@ -39,6 +39,7 @@ const SignupPage = () => {
   const goToLoginPage = () => {
     navigation.navigate('Login');
   };
+
   const handleSignup = () => {
     if (!nik || !nama || !email || !alamat || !password || !confirmPassword) {
       ToastAndroid.show('Please fill in all fields!', ToastAndroid.SHORT);
@@ -57,22 +58,21 @@ const SignupPage = () => {
       ToastAndroid.show('Passwords do not match!', ToastAndroid.SHORT);
       return;
     }
-
     axios
-      .post('https://scan-ocular-backend.vercel.app/api/users/signup/', {
-        NIK: nik,
+      .post('http://203.175.10.56:8000/api/users/signup/', {
         name: nama,
+        NIK: nik,
         email: email,
-        alamat: alamat,
         password: password,
-        tanggal_lahir: convertDateFormat(date.toLocaleDateString()),
+        alamat: alamat,
+        tanggal_lahir: convertDateFormat(date),
       })
       .then(function (response) {
         ToastAndroid.show('Registrasi berhasil', ToastAndroid.SHORT);
         navigation.dispatch(StackActions.replace('Login'));
       })
       .catch(function (error) {
-        ToastAndroid.show('Invalid Data', ToastAndroid.SHORT);
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
       });
   };
 

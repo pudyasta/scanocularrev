@@ -8,7 +8,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import ReactTextFormat from 'react-text-format';
 
 const TermsOfServices = () => {
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -159,7 +158,7 @@ const TermsOfServices = () => {
               </Text>
             </ScrollView>
             <TouchableOpacity
-              className="bg-[#295FA6] p-1 rounded-md"
+              className="bg-[#295FA6] p-2 rounded-md"
               title="Setuju"
               onPress={togglePopup}>
               <Text className="text-center font-[Poppins-Medium] text-white">

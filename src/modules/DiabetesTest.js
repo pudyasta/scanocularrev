@@ -7,7 +7,7 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import BlueButton from '../components/common/BlueButton';
 import {BarIndicator} from 'react-native-indicators';
 
-const GlukomaTest = () => {
+const DiabetesTest = () => {
   let idx = -1;
   const [loading, setLoading] = useState(false);
   const [selectedId0, setSelectedId0] = useState();
@@ -29,6 +29,7 @@ const GlukomaTest = () => {
   const [selectedId16, setSelectedId16] = useState();
   const [selectedId17, setSelectedId17] = useState();
   const [selectedId18, setSelectedId18] = useState();
+  const [selectedId19, setSelectedId19] = useState();
 
   const states = [
     selectedId0,
@@ -50,6 +51,7 @@ const GlukomaTest = () => {
     selectedId16,
     selectedId17,
     selectedId18,
+    selectedId19,
   ];
   const setStates = [
     setSelectedId0,
@@ -71,9 +73,10 @@ const GlukomaTest = () => {
     setSelectedId16,
     setSelectedId17,
     setSelectedId18,
+    setSelectedId19,
   ];
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setLoading(true);
     const a = states.some(res => !res);
     if (a) {
@@ -81,9 +84,6 @@ const GlukomaTest = () => {
       setLoading(false);
       return;
     }
-    try {
-      const res = await axios.post('', {});
-    } catch (e) {}
     console.log('first');
   };
   const radioButtons = useMemo(
@@ -115,7 +115,7 @@ const GlukomaTest = () => {
       </LinearGradient>
       <View className="px-5 py-8">
         <Text className="font-[Poppins-SemiBold] text-[#295FA6] text-2xl">
-          Screening Glukoma
+          Screening Diabetes Retinopati
         </Text>
         <Text className="font-[Poppins] text-black text-md mt-1 ">
           Ceklis kotak berdaasar kondis anda
@@ -157,69 +157,78 @@ const GlukomaTest = () => {
 
 const questions = [
   {
-    title: '1. Riwayat Kesehatan Umum',
+    title: '1.	Riwayat Diabetes',
     quest: [
-      'Apakah Anda memiliki riwayat penyakit mata atau keluhan penglihatan sebelumnya?',
-      'Apakah Anda memiliki riwayat penyakit kronis seperti diabetes, hipertensi, atau penyakit kardiovaskular?',
-      'Apakah ada riwayat keluarga dengan penyakit glaukoma atau masalah mata lainnya?',
-      'Apakah ada penurunan penglihatan dalam 6 bulan terakhir?',
-      'Apakah ada riwayat mata merah berulang?',
+      'Sejak kapan Anda didiagnosis menderita diabetes?',
+      'Apakah Anda menderita diabetes tipe 1 atau tipe 2?',
+      'Bagaimana kontrol gula darah Anda? Apakah Anda mengukur gula darah secara rutin?',
+      'Apakah Anda mengonsumsi obat-obatan oral atau insulin untuk mengendalikan diabetes?',
     ],
   },
   {
-    title: '2. Gejala yang Dirasakan',
+    title: '2.	Riwayat Pengobatan Diabetes',
     quest: [
-      'Apakah Anda mengalami perubahan penglihatan seperti penglihatan kabur atau hilang pada waktu tertentu?',
-      'Apakah Anda merasakan nyeri mata, perasaan tertekan di mata, atau sakit kepala yang berhubungan dengan mata?',
-      'Apakah Anda pernah melihat cahaya berwarna-warni atau lingkaran cahaya berkeliling di sekitar lampu?',
+      'Apakah Anda mengikuti rencana pengobatan yang direkomendasikan oleh dokter untuk mengontrol diabetes Anda?',
+      'Apakah Anda memiliki riwayat penggunaan obat-obatan atau terapi lain untuk diabetes, seperti injeksi insulin?',
     ],
   },
   {
-    title: '3.	Pemeriksaan Mata Sebelumnya',
+    title: '3.	Gejala Mata dan Penglihatan',
     quest: [
-      'Apakah Anda pernah menjalani pemeriksaan mata atau tes glaukoma sebelumnya?',
-      'Apakah Anda menggunakan kacamata atau lensa kontak?',
-      'Apakah Anda menggunakan obat tetes mata atau obat mata lainnya secara rutin?',
+      'Apakah Anda mengalami perubahan penglihatan seperti penglihatan kabur, penglihatan ganda, atau perubahan dalam kemampuan membaca?',
+      'Apakah Anda pernah melihat bintik-bintik mengambang atau "lampu kilat" di pandangan Anda?',
+      'Apakah Anda merasakan nyeri atau ketidaknyamanan di mata?',
     ],
   },
   {
-    title: '4.	Riwayat Penggunaan Obat dan Suplemen',
+    title: '4.	Pemeriksaan Mata Sebelumnya',
     quest: [
-      'Apakah Anda menggunakan obat-obatan tertentu, terutama kortikosteroid (steroid) dalam bentuk apa pun?',
-      'Apakah Anda mengonsumsi suplemen atau herbal tertentu secara rutin?',
+      'Apakah Anda pernah menjalani pemeriksaan mata terakhir? Jika ya, apa hasilnya?',
+      'Apakah Anda pernah diberitahu oleh dokter bahwa Anda memiliki masalah mata terkait diabetes?',
     ],
   },
   {
-    title: '5.	Riwayat Pengukuran Tekanan Mata',
+    title: '5.	Riwayat Merokok',
+    quest: ['Apakah Anda merokok? Jika ya, sejak kapan dan seberapa sering?'],
+  },
+  {
+    title: '6.	Riwayat Penggunaan Alkohol',
     quest: [
-      'Apakah Anda pernah mengukur tekanan mata Anda? Jika ya, apa hasilnya?',
+      'Apakah Anda mengonsumsi minuman beralkohol? Jika ya, dalam jumlah berapa?',
     ],
   },
   {
-    title: '6.	Riwayat Operasi atau Cedera Mata',
+    title: '7.	Riwayat Penggunaan Obat dan Suplemen',
     quest: [
-      'Apakah Anda pernah menjalani operasi mata atau cedera mata sebelumnya?',
-    ],
-  },
-  {
-    title: '7.	Aktivitas Harian dan Gaya Hidup',
-    quest: [
-      'Apakah Anda memiliki pekerjaan atau hobi yang memerlukan konsentrasi visual yang tinggi atau paparan sinar matahari berlebih?',
+      'Apakah Anda menggunakan obat atau suplemen tertentu dalam rangka mengelola diabetes atau masalah mata?',
       'Apakah Anda merokok?',
     ],
   },
   {
-    title: '8.	Gejala Lainnya',
+    title: '8.	Penggunaan Kacamata atau Lensa Kontak',
     quest: [
-      'Apakah Anda mengalami keluhan lain seperti pandangan berbayang atau penurunan penglihatan saat melihat di samping atau ke bawah?',
+      'Apakah Anda menggunakan kacamata atau lensa kontak untuk membantu penglihatan Anda?',
     ],
   },
   {
-    title: '9.	Kehamilan dan Riwayat Kesehatan Khusus',
+    title: '9.	Kontrol Gaya Hidup',
     quest: [
-      'Jika pasien perempuan, apakah Anda sedang hamil atau merencanakan kehamilan? Beberapa kondisi medis dapat memengaruhi pengobatan selama kehamilan.',
+      'Bagaimana pola makan Anda? Apakah Anda mengonsumsi makanan yang sehat untuk diabetes?',
+      'Apakah Anda rutin berolahraga?',
+    ],
+  },
+  {
+    title: '10.	Riwayat Keluarga',
+    quest: [
+      'Apakah ada anggota keluarga yang memiliki riwayat diabetes atau masalah mata?',
+    ],
+  },
+  {
+    title: '11.	Kehamilan (jika berlaku):',
+    quest: [
+      'Jika pasien perempuan dan berencana untuk hamil atau sedang hamil, apakah Anda telah berbicara dengan dokter Anda tentang pengelolaan diabetes selama kehamilan? (Isikan tidak jika tidak mengalami kehamilan)',
     ],
   },
 ];
 
-export default GlukomaTest;
+export default DiabetesTest;

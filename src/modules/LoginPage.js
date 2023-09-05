@@ -44,7 +44,7 @@ const LoginPage = () => {
       return;
     }
     axios
-      .post('https://scan-ocular-backend.vercel.app/api/users/signin/', {
+      .post('http://203.175.10.56:8000/api/users/signin/', {
         email: email,
         password: password,
       })

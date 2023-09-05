@@ -89,7 +89,7 @@ const DATA = [
       'https://res.cloudinary.com/dk0z4ums3/image/upload/v1640311815/attached_image/penyakit/oftalmologi/retinopati.jpg',
     title: 'Scan Penyakit Diabetes Retinopati',
     content: 'Deteksi penyakit katarak menggunakan kamera smartphone',
-    navigate: 'GlukomaScreen',
+    navigate: 'DiabetesScreen',
   },
 ];
 

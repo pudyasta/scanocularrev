@@ -1,23 +1,32 @@
 import {View, TouchableOpacity, Image} from 'react-native';
-import {StyleSheet, ActivityIndicator, Linking, Text} from 'react-native';
+import {
+  StyleSheet,
+  ActivityIndicator,
+  Linking,
+  Text,
+  ToastAndroid,
+} from 'react-native';
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import TermsOfServices from '../components/TermsOfServices';
 import RNFS from 'react-native-fs';
+import axios from 'axios';
+import {BarIndicator} from 'react-native-indicators';
+import {getAsyncData} from '../helpers/getAsyncData';
 
 const ScanScreen = props => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+
   const [loading, setLoading] = useState(null);
-  const [flashtoggle, setFlashToggle] = useState(false);
+  const [userId, setUserId] = useState(null);
   const cameraRef = useRef(Camera);
   const [camView, setCamView] = useState('back');
-  const [torch, setTorch] = useState('off');
   const devices = useCameraDevices();
   const device = camView === 'back' ? devices.back : devices.front;
-  const [dataPath, setDataPath] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const cameraPermission = async () => {
     const permission = await Camera.requestCameraPermission();
@@ -29,11 +38,18 @@ const ScanScreen = props => {
 
   useEffect(() => {
     cameraPermission();
+    getAsyncData()
+      .then(res => {
+        setUserId(res.data.user_id);
+      })
+      .catch(e => {
+        navigation.goBack();
+      });
   }, [cameraPermission, devices]);
+
   const takePhoto = async () => {
     setLoading(true);
 
-    // navigation.navigate('Resultpage');
     try {
       if (cameraRef.current == null) {
         throw new Error('Camera Ref is Null');
@@ -42,31 +58,62 @@ const ScanScreen = props => {
           quality: 85,
           skipMetadata: true,
         });
+        setIsProcessing(true);
+        const a = await RNFS.readFile(photo.path, 'base64');
+        axios
+          .post('http://203.175.10.56:8000/api/pemeriksaan/cekmata/katarak', {
+            img: a,
+            user_id: userId,
+          })
+          .then(function (res) {
+            setIsProcessing(false);
 
-        setDataPath(photo.path);
-        RNFS.readFile(photo.path, 'base64').then(async res => {
-          var path = RNFS.ExternalDirectoryPath + '/test.txt';
-
-          // write the file
-          RNFS.writeFile(path, res, 'utf8')
-            .then(success => {
-              console.log('FILE WRITTEN! ' + path);
-            })
-            .catch(err => {
-              console.log(err.message);
-            });
-        });
-        console.log(dataPath);
+            if (res.data.diagnosa == 'normal') {
+              navigation.navigate('Resultpage', {data: res.data.diagnosa});
+            } else if (res.data.diagnosa == 'cataract') {
+              navigation.navigate('Resultpage', {
+                data: res.data.diagnosa,
+                path: photo.path,
+              });
+            } else {
+              ToastAndroid.show('Mata Tidak Terdetekasi', ToastAndroid.SHORT);
+            }
+            // navigation.navigate('ResultPage');
+          })
+          .catch(function (error) {
+            setIsProcessing(false);
+            ToastAndroid.show(
+              'Mata Tidak Terdetekasi, silahakan coba kembali',
+              ToastAndroid.SHORT,
+            );
+          });
       }
     } catch (error) {
-      console.log(error);
+      setIsProcessing(false);
+      ToastAndroid.show(
+        'Mohon maaf terjadi galat pada sistem, silahakan coba kembali',
+        ToastAndroid.SHORT,
+      );
     }
   };
+
+  // const frameProcessor = useFrameProcessor(frame => {
+  //   'worklet';
+  //   const scannedFaces = scanFaces(frame);
+  //   runOnJS(setFaces)(scannedFaces);
+  // }, []);
 
   if (!device || !cameraPermission) {
     return <ActivityIndicator style={{flex: 1}} size={50} color="blue" />;
   }
-  return (
+  return isProcessing ? (
+    <View className="h-screen justify-center items-center flex px-5">
+      <BarIndicator color="blue" />
+      <Text className="absolute top-1/2 -mt-24 text-center font-[Poppins-Medium] text-lg text-black">
+        Kami sedang menganalisa gambar anda mohon tunggu sejenak
+      </Text>
+    </View>
+  ) : (
     <>
       <View style={{flex: 1}}>
         {isFocused && (
@@ -76,37 +123,30 @@ const ScanScreen = props => {
               style={StyleSheet.absoluteFill}
               device={device}
               photo={true}
+              torch="on"
+              // preset="medium"
               isActive={true}
               ref={cameraRef}
+              // frameProcessor={frameProcessor}
+              // frameProcessorFps={5}
               {...props}
             />
           </>
         )}
         <View className="h-full flex items-end flex-row justify-center gap-x-20 pb-14">
-          <TouchableOpacity
-            onPress={() => {
-              setFlashToggle(!flashtoggle);
-              torch === 'off' ? setTorch('on') : setTorch('off');
-            }}>
-            <Icon size={24} color="white" name="flash" />
-          </TouchableOpacity>
+          <TouchableOpacity></TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => {
               takePhoto();
             }}
-            className="bg-white p-5 rounded-full">
+            className="bg-white p-6 rounded-full">
             <View>
-              <Icon size={24} color="black" name="camera" />
+              <Icon size={32} color="black" name="camera" />
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              camView === 'back' ? setCamView('front') : setCamView('back');
-            }}>
-            <Icon size={24} color="white" name="camera-flip" />
-          </TouchableOpacity>
+          <TouchableOpacity></TouchableOpacity>
         </View>
       </View>
     </>

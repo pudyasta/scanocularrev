@@ -6,30 +6,26 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import avatar from '../../public/profile.png';
 import heroImage from '../../public/hero.png';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {getAsyncData} from '../helpers/getAsyncData';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [data, setData] = useState(null);
 
-  const getData = async () => {
-    try {
-      const val = await AsyncStorage.getItem('userData');
-      if (val !== null) {
-        setData(JSON.parse(val).data.name);
-      }
-    } catch (e) {
-      ToastAndroid.show('Internal Server Error', ToastAndroid.SHORT);
-    }
-  };
-
   useEffect(() => {
-    getData();
+    getAsyncData()
+      .then(res => {
+        setData(res.data.name);
+      })
+      .catch(e => {
+        ToastAndroid.show('Internal Server Error', ToastAndroid.SHORT);
+      });
   }, []);
 
   if (data == null) {
@@ -37,7 +33,7 @@ const HomeScreen = () => {
   }
 
   const toProfile = () => {
-    navigation.dispatch(StackActions.replace('Profilepage'));
+    navigation.navigate('Profilepage');
   };
 
   return (
@@ -114,12 +110,16 @@ export const SECTIONS = [
     uri: require('../../public/images/new1.png'),
     source: 'Tribun.com',
     datetime: '8 Mei 2023',
+    desc: 'lorem',
   },
   {
     title: 'JEC Eye Klaim Atasi 18 Ribu   Kelainan Refraksi Mata Indonesia',
     uri: require('../../public/images/new2.png'),
-    source: 'Detik.com',
+    source: 'Republika',
     datetime: '8 Mei 2023',
+    desc: `   JEC Eye Hospitals and Clinics mengukuhkan posisinya sebagai eye care leader di Indonesia setelah berhasil mengatasi kelainan refraksi pasien pada lebih dari 18 ribu mata di Indonesia menggunakan ReLEx SMILE. Teknologi mutakhir ini merupakan inovasi keluaran ZEISS, yakni perusahaan global yang fokus pada pengembangan solusi optik dan optoelektronik. 
+    Melalui ReLEx SMILE, ZEISS telah sukses mengoreksi 7 juta mata pasien di seluruh dunia. Dari jumlah itu, JEC menjadi penyedia penyedia layanan ReLEx SMILE terbanyak (Top Contributor) secara global.
+    Atas kontribusi tersebut, ZEISS memberikan apresiasi khusus kepada JEC, dengan seremoni penyerahan penghargaan telah dilaksanakan pada 12 Mei 2023 lalu di Rumah Sakit Mata JEC Kedoya. Penghargaan diserahkan oleh Head of Business Unit at ZEISS Medical Technology di Indonesia, Timotius Prawirahalim Lim kepada Presiden Direktur JEC Group, DR. Dr. Johan A. Hutauruk, SpM(K) dan Direktur Utama RS Mata JEC Kedoya, DR. Dr. Setiyo Budi Riyanto, SpM(K).`,
   },
 
   {
@@ -127,6 +127,7 @@ export const SECTIONS = [
     uri: require('../../public/images/new3.png'),
     source: 'halodoc.com',
     datetime: '8 Mei 2023',
+    desc: 'lorem',
   },
 
   {
@@ -134,6 +135,7 @@ export const SECTIONS = [
     source: 'halodoc.com',
     datetime: '8 Mei 2023',
     uri: require('../../public/images/new1.png'),
+    desc: 'lorem',
   },
 ];
 

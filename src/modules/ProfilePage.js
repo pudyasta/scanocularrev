@@ -8,6 +8,7 @@ import IconIonicons from 'react-native-vector-icons/Ionicons';
 import IconMaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions, useNavigation} from '@react-navigation/native';
+import BackToHome from '../components/BackToHome';
 
 export default function Profilepage() {
   const [name, setName] = useState(null);
@@ -32,10 +33,6 @@ export default function Profilepage() {
     getData();
   }, []);
 
-  const handleIconClick = () => {
-    navigation.dispatch(StackActions.replace('Mainpage'));
-  };
-
   const logout = () => {
     const keyToRemove = 'userData';
     AsyncStorage.removeItem(keyToRemove)
@@ -50,15 +47,7 @@ export default function Profilepage() {
   return (
     <View style={{flex: 1}} className=" bg-white">
       {/* Gambar profil dan nama pengguna */}
-      <View className="flex-row items-center  p-5">
-        {/* <Image source={avatar} className="w-8 h-8 mr-4" /> */}
-        <TouchableOpacity onPress={handleIconClick}>
-          <Icon name="arrowleft" size={30} />
-        </TouchableOpacity>
-        <Text className="text-lg font-['Poppins-SemiBold'] capitalize ml-4 text-black">
-          Profile Screen
-        </Text>
-      </View>
+      <BackToHome />
 
       <View className="w-full p-4 justify-center items-center">
         <Image source={avatar} className="w-32 h-32" />
