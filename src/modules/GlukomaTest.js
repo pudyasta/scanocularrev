@@ -1,15 +1,43 @@
-import React, {useMemo, useState} from 'react';
-import {Text, View, TouchableOpacity, ToastAndroid} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+  ActivityIndicator,
+} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import BackToHome from '../components/BackToHome';
 import LinearGradient from 'react-native-linear-gradient';
 import RadioGroup from 'react-native-radio-buttons-group';
 import BlueButton from '../components/common/BlueButton';
 import {BarIndicator} from 'react-native-indicators';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import {getAsyncData} from '../helpers/getAsyncData';
+import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
+
+function generateRandomString(length) {
+  const charset =
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  const charsetLength = charset.length;
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charsetLength);
+    result += charset.charAt(randomIndex);
+  }
+
+  return result;
+}
 
 const GlukomaTest = () => {
   let idx = -1;
+  const navigation = useNavigation();
+  const [dataUser, setDataUser] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sended, setSended] = useState(false);
   const [selectedId0, setSelectedId0] = useState();
   const [selectedId1, setSelectedId1] = useState();
   const [selectedId2, setSelectedId2] = useState();
@@ -73,6 +101,12 @@ const GlukomaTest = () => {
     setSelectedId18,
   ];
 
+  useEffect(() => {
+    getAsyncData().then(val => {
+      setDataUser(val.data.user_id);
+    });
+  }, []);
+
   const handleSubmit = async () => {
     setLoading(true);
     const a = states.some(res => !res);
@@ -81,10 +115,35 @@ const GlukomaTest = () => {
       setLoading(false);
       return;
     }
-    try {
-      const res = await axios.post('', {});
-    } catch (e) {}
-    console.log('first');
+    if (!sended) {
+      try {
+        states.forEach(async (val, i) => {
+          axios
+            .post(
+              'http://203.175.10.56:8000/api/pemeriksaan/cekmata/screening',
+              {
+                scan_id: generateRandomString(10),
+                user: dataUser,
+                soal_id: i,
+                value: val,
+                type_penyakit: 'glukoma',
+              },
+            )
+            .then(res => {
+              setShowAlert(true);
+              setSended(true);
+            })
+            .catch(e => {
+              ToastAndroid.show(e, ToastAndroid.SHORT);
+            });
+        });
+      } catch (e) {
+        ToastAndroid.show(e, ToastAndroid.SHORT);
+      }
+    } else {
+      ToastAndroid.show('Data anda telah terkirim', ToastAndroid.SHORT);
+    }
+    setLoading(false);
   };
   const radioButtons = useMemo(
     () => [
@@ -103,6 +162,9 @@ const GlukomaTest = () => {
     ],
     [],
   );
+  if (dataUser == null) {
+    return <ActivityIndicator style={{flex: 1}} size={50} color="blue" />;
+  }
   return (
     <ScrollView className="bg-white h-screen">
       <LinearGradient
@@ -150,6 +212,21 @@ const GlukomaTest = () => {
         <BlueButton onPress={() => handleSubmit()} disabled={loading}>
           {loading ? <BarIndicator color="white" size={20} /> : 'Kirim Data'}
         </BlueButton>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Data Berhasil dikirim"
+          message="Data anda akan dicek oleh tenaga ahli kami pada bidang mata. Kami akan mengirimkan feedback apabila hasil telah dikonfirmasi oleh pihak ahli"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showConfirmButton={true}
+          confirmText="Tutup"
+          confirmButtonColor="#295FA6"
+          onConfirmPressed={() => {
+            setShowAlert(false);
+            navigation.navigate('Mainpage');
+          }}
+        />
       </View>
     </ScrollView>
   );

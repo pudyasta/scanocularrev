@@ -76,7 +76,7 @@ const DiabetesTest = () => {
     setSelectedId19,
   ];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
     const a = states.some(res => !res);
     if (a) {
@@ -84,7 +84,37 @@ const DiabetesTest = () => {
       setLoading(false);
       return;
     }
-    console.log('first');
+    if (!sended) {
+      try {
+        states.forEach(async (val, i) => {
+          axios
+            .post(
+              'http://203.175.10.56:8000/api/pemeriksaan/cekmata/screening',
+              {
+                user: dataUser,
+                soal_id: i,
+                value: val,
+                type_penyakit: 'glukoma',
+              },
+            )
+            .then(res => {
+              setShowAlert(true);
+              setSended(true);
+            })
+            .catch(e => {
+              ToastAndroid.show(
+                'Terjadi kesalahan pada server',
+                ToastAndroid.SHORT,
+              );
+            });
+        });
+      } catch (e) {
+        ToastAndroid.show('Terjadi kesalahan pada server', ToastAndroid.SHORT);
+      }
+    } else {
+      ToastAndroid.show('Data anda telah terkirim', ToastAndroid.SHORT);
+    }
+    setLoading(false);
   };
   const radioButtons = useMemo(
     () => [
