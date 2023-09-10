@@ -89,7 +89,7 @@ const DiabetesTest = () => {
         states.forEach(async (val, i) => {
           axios
             .post(
-              'http://203.175.10.56:8000/api/pemeriksaan/cekmata/screening',
+              'http://scanocular.online/api/pemeriksaan/cekmata/screening',
               {
                 user: dataUser,
                 soal_id: i,

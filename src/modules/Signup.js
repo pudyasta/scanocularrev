@@ -59,7 +59,7 @@ const SignupPage = () => {
       return;
     }
     axios
-      .post('http://203.175.10.56:8000/api/users/signup/', {
+      .post('http://scanocular.online/api/users/signup/', {
         name: nama,
         NIK: nik,
         email: email,

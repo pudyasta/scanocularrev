@@ -15,10 +15,12 @@ import RNFS from 'react-native-fs';
 import axios from 'axios';
 import {BarIndicator} from 'react-native-indicators';
 import {getAsyncData} from '../helpers/getAsyncData';
+import Tutorial from '../components/Tutorial';
 
 const ScanScreen = props => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [isOn, setIsOn] = useState(false);
 
   const [loading, setLoading] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -61,7 +63,7 @@ const ScanScreen = props => {
         setIsProcessing(true);
         const a = await RNFS.readFile(photo.path, 'base64');
         axios
-          .post('http://203.175.10.56:8000/api/pemeriksaan/cekmata/katarak', {
+          .post('http://scanocular.online/api/pemeriksaan/cekmata/katarak', {
             img: a,
             user_id: userId,
           })
@@ -118,12 +120,13 @@ const ScanScreen = props => {
       <View style={{flex: 1}}>
         {isFocused && (
           <>
+            <Tutorial />
             <TermsOfServices />
             <Camera
               style={StyleSheet.absoluteFill}
               device={device}
               photo={true}
-              torch="on"
+              torch={isOn ? 'on' : 'off'}
               // preset="medium"
               isActive={true}
               ref={cameraRef}
@@ -134,7 +137,9 @@ const ScanScreen = props => {
           </>
         )}
         <View className="h-full flex items-end flex-row justify-center gap-x-20 pb-14">
-          <TouchableOpacity></TouchableOpacity>
+          <TouchableOpacity>
+            <Icon size={32} color="transparent" name="flash" />
+          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => {
@@ -145,8 +150,9 @@ const ScanScreen = props => {
               <Icon size={32} color="black" name="camera" />
             </View>
           </TouchableOpacity>
-
-          <TouchableOpacity></TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsOn(!isOn)}>
+            <Icon size={32} color="white" name="flash" />
+          </TouchableOpacity>
         </View>
       </View>
     </>
