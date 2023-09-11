@@ -37,12 +37,9 @@ export default function Profilepage() {
     const keyToRemove = 'userData';
     AsyncStorage.removeItem(keyToRemove)
       .then(() => {
-        console.log(`Successfully removed item with key: ${keyToRemove}`);
         navigation.dispatch(StackActions.replace('Login'));
       })
-      .catch(error => {
-        console.error(`Error removing item: ${error.message}`);
-      });
+      .catch(error => {});
   };
   return (
     <View style={{flex: 1}} className=" bg-white">
@@ -55,14 +52,14 @@ export default function Profilepage() {
           {name}
         </Text>
         <Text className="mt-1 font-bold font-['Poppins'] ">{email}</Text>
-        <TouchableOpacity className="mt-3 bg-[#295FA6] pt-2 pb-2 pl-12 pr-12 rounded-full">
+        {/* <TouchableOpacity className="mt-3 bg-[#295FA6] pt-2 pb-2 pl-12 pr-12 rounded-full">
           <Text className="text-white font-[Poppins-SemiBold]">
             Edit Profile
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
-      <View className="w-ful px-4 mt-8">
+      {/* <View className="w-ful px-4 mt-8">
         <View className="justify-between flex flex-row">
           <View className="flex flex-row">
             <View className="w-10 h-10 rounded-full bg-[#CCE3FF] justify-center items-center">
@@ -86,7 +83,7 @@ export default function Profilepage() {
             </View>
           </View>
         </View>
-      </View>
+      </View> */}
 
       <TouchableOpacity onPress={logout}>
         <View className="w-ful px-4 mt-4">

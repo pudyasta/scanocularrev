@@ -6,10 +6,19 @@ import LinearGradient from 'react-native-linear-gradient';
 import RadioGroup from 'react-native-radio-buttons-group';
 import BlueButton from '../components/common/BlueButton';
 import {BarIndicator} from 'react-native-indicators';
+import {useNavigation} from '@react-navigation/native';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import {generateRandomString} from './GlukomaTest';
+import axios from 'axios';
+import {getAsyncData} from '../helpers/getAsyncData';
 
 const DiabetesTest = () => {
   let idx = -1;
+  const navigation = useNavigation();
+  const [dataUser, setDataUser] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sended, setSended] = useState(false);
   const [selectedId0, setSelectedId0] = useState();
   const [selectedId1, setSelectedId1] = useState();
   const [selectedId2, setSelectedId2] = useState();
@@ -69,13 +78,17 @@ const DiabetesTest = () => {
     setSelectedId12,
     setSelectedId13,
     setSelectedId14,
-    setSelectedId15,
+    setSelectedId15, 
     setSelectedId16,
     setSelectedId17,
     setSelectedId18,
     setSelectedId19,
   ];
-
+  React.useEffect(() => {
+    getAsyncData().then(val => {
+      setDataUser(val.data.user_id);
+    });
+  }, []);
   const handleSubmit = async () => {
     setLoading(true);
     const a = states.some(res => !res);
@@ -86,15 +99,18 @@ const DiabetesTest = () => {
     }
     if (!sended) {
       try {
+        const scanId = generateRandomString(10);
+
         states.forEach(async (val, i) => {
           axios
             .post(
-              'http://scanocular.online/api/pemeriksaan/cekmata/screening',
+              'https://scanocular.online/api/pemeriksaan/cekmata/screening',
               {
+                scan_id: scanId,
                 user: dataUser,
                 soal_id: i,
                 value: val,
-                type_penyakit: 'glukoma',
+                type_penyakit: 'diabetes',
               },
             )
             .then(res => {
@@ -102,6 +118,7 @@ const DiabetesTest = () => {
               setSended(true);
             })
             .catch(e => {
+              console.log(e);
               ToastAndroid.show(
                 'Terjadi kesalahan pada server',
                 ToastAndroid.SHORT,
@@ -109,7 +126,7 @@ const DiabetesTest = () => {
             });
         });
       } catch (e) {
-        ToastAndroid.show('Terjadi kesalahan pada server', ToastAndroid.SHORT);
+        ToastAndroid.show('Terjadi kesalahan pada server1', ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show('Data anda telah terkirim', ToastAndroid.SHORT);
@@ -180,6 +197,21 @@ const DiabetesTest = () => {
         <BlueButton onPress={() => handleSubmit()} disabled={loading}>
           {loading ? <BarIndicator color="white" size={20} /> : 'Kirim Data'}
         </BlueButton>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Data Berhasil dikirim"
+          message="Data anda akan dicek oleh tenaga ahli kami pada bidang mata. Kami akan mengirimkan feedback apabila hasil telah dikonfirmasi oleh pihak ahli"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showConfirmButton={true}
+          confirmText="Tutup"
+          confirmButtonColor="#295FA6"
+          onConfirmPressed={() => {
+            setShowAlert(false);
+            navigation.navigate('Mainpage');
+          }}
+        />
       </View>
     </ScrollView>
   );

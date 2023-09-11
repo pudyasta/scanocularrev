@@ -7,12 +7,15 @@ import {
   ScrollView,
   ToastAndroid,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import avatar from '../../public/profile.png';
 import axios from 'axios';
 import {getAsyncData} from '../helpers/getAsyncData';
+import {useNavigation} from '@react-navigation/native';
 const RiwayatScreen = () => {
+  const navigation = useNavigation();
   const [response, setResponse] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
@@ -62,12 +65,17 @@ const RiwayatScreen = () => {
   }
   return (
     <View className="p-4 h-full bg-white">
-      <View className="flex-row items-center pb-5">
-        <Image source={avatar} className="w-8 h-8 left-1 top-1 absolute" />
-        <Text className="text-lg text-black font-bold  w-full flex-1 text-center">
-          Riwayat
-        </Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Profilepage');
+        }}>
+        <View className="flex-row items-center pb-5">
+          <Image source={avatar} className="w-8 h-8 left-1 top-1 absolute" />
+          <Text className="text-lg text-black font-bold  w-full flex-1 text-center">
+            Screening
+          </Text>
+        </View>
+      </TouchableOpacity>
       {/* ... */}
       {/* List */}
       <ScrollView
@@ -101,7 +109,7 @@ const RiwayatScreen = () => {
                       ? 'Sehat'
                       : item.status == 'pending'
                       ? 'Terindikasi'
-                      : 'Terkonfirmasi Katarak'}
+                      : 'Terkonfirmasi'}
                   </Text>
                   <Text className="text-sm text-gray-500 font-['Poppins-Regular']">
                     {item.date}

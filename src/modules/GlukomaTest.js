@@ -17,7 +17,7 @@ import {getAsyncData} from '../helpers/getAsyncData';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 
-function generateRandomString(length) {
+export function generateRandomString(length) {
   const charset =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
