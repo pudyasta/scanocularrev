@@ -15,7 +15,7 @@ export default function ArticleView({uri}) {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <ScrollView contentContainerStyle={{paddingBottom: 80}}>
+      <ScrollView contentContainerStyle={{paddingBottom: 2}}>
         <ImageBackground
           source={item.uri}
           style={{height: 320}}

@@ -54,7 +54,6 @@ const LoginPage = () => {
         navigation.dispatch(StackActions.replace('Mainpage'));
       })
       .catch(function (error) {
-        console.log(error);
         ToastAndroid.show('Email atau password invalid', ToastAndroid.SHORT);
       });
   };
