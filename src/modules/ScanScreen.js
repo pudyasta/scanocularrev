@@ -63,7 +63,7 @@ const ScanScreen = props => {
         setIsProcessing(true);
         const a = await RNFS.readFile(photo.path, 'base64');
         axios
-          .post('http://scanocular.online/api/pemeriksaan/cekmata/katarak', {
+          .post('https://scanocular.online/api/pemeriksaan/cekmata/katarak', {
             img: a,
             user_id: userId,
           })

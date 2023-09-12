@@ -121,7 +121,7 @@ const GlukomaTest = () => {
         states.forEach(async (val, i) => {
           axios
             .post(
-              'http://scanocular.online/api/pemeriksaan/cekmata/screening',
+              'https://scanocular.online/api/pemeriksaan/cekmata/screening',
               {
                 scan_id: scanId,
                 user: dataUser,

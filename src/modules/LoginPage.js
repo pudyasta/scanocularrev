@@ -44,7 +44,7 @@ const LoginPage = () => {
       return;
     }
     axios
-      .post('http://scanocular.online/api/users/signin/', {
+      .post('https://scanocular.online/api/users/signin/', {
         email: email,
         password: password,
       })
